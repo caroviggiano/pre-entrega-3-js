@@ -1,0 +1,41 @@
+body{
+    background-image:  url(../img/fondo-fdm.jpg)
+}
+h1{
+    display: flex;
+    justify-content: center;
+    font-family: 'Tilt Prism', cursive;
+    font-size: 40px;
+}
+h2{
+    background-color: rgb(92, 85, 141);
+    display: flex;
+    justify-content: center;
+    font-family: 'Pacifico', cursive;
+    font-size: 40px;
+}
+h3{
+    background-color: rgb(114, 111, 133);
+    display: flex;
+    justify-content: center;
+    font-family: 'Castoro Titling', cursive;
+    font-size: 20px;
+    padding: 10px;
+}
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
+    border-radius: 50%;
+  
+}
+.stilo-boton{
+    display: flex;
+  justify-content: space-around;
+
+}
+
+.stilo-boton button:hover{
+    background-color: #ff0000;
+  }
