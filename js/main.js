@@ -25,13 +25,18 @@ class Producto {
     if (producto) {
       return producto.precio * cantidad;
     } else {
-      alert("Opción no válida");
       return 0;
     }
   }
   
   function mostrarOpciones(opciones) {
-    return Number(prompt(`Bienvenido a Kioskito De Maní! Presione lo que necesite para continuar\n${opciones.map((o, index) => `${index + 1}. ${o}`).join("\n")}`));
+    return Number(
+      prompt(
+        `Bienvenido a Kioskito De Maní! Presione lo que necesite para continuar\n${opciones
+          .map((o, index) => `${index + 1}. ${o}`)
+          .join("\n")}`
+      )
+    );
   }
   
   function mostrarProductos(tipoProductos) {
@@ -39,73 +44,44 @@ class Producto {
     let productoSeleccionado = mostrarOpciones(opcionesProductos);
   
     if (productoSeleccionado < 1 || productoSeleccionado > opcionesProductos.length) {
-      alert("El número que seleccionó no está dentro de las opciones. Por favor, inténtelo nuevamente.");
+      mostrarMensaje("El número que seleccionó no está dentro de las opciones. Por favor, inténtelo nuevamente.");
       return null;
     } else {
       return productoSeleccionado - 1;
     }
   }
   
-  let opcionSeleccionada = mostrarOpciones([
-    "Comprar golosinas",
-    "Comprar bebidas",
-    "Comprar cigarrillos",
-    "Cargar SUBE"
-  ]);
+  let mensajeActual = null;
   
-  if (opcionSeleccionada === 1) {
-    const tipoGolosinas = productos.slice(0, 4);
-    let golosinaSeleccionada = mostrarProductos(tipoGolosinas);
-  
-    if (golosinaSeleccionada !== null) {
-      let cantidad = Number(prompt("Seleccione la cantidad que desee"));
-      let monto = calculoMonto(golosinaSeleccionada, cantidad);
-      alert("El monto a pagar es de: $" + monto);
+  function mostrarMensajeEnContenedor(mensaje) {
+    if (mensajeActual) {
+      mensajeActual.remove();
     }
   
-  } else if (opcionSeleccionada === 2) {
-    const tipoBebidas = productos.slice(4, 8);
-    let bebidaSeleccionada = mostrarProductos(tipoBebidas);
+    const mensajeContainer = document.createElement("p");
+    mensajeContainer.textContent = mensaje;
+    document.getElementById("mensaje-container").appendChild(mensajeContainer);
   
-    if (bebidaSeleccionada !== null) {
-      let cantidad = Number(prompt("Seleccione la cantidad que desee"));
-      let monto = calculoMonto(bebidaSeleccionada + 4, cantidad);
-      alert("El monto a pagar es de: $" + monto);
-    }
-  
-  } else if (opcionSeleccionada === 3) {
-    const tipoCigarrillos = productos.slice(8);
-    let cigarrilloSeleccionado = mostrarProductos(tipoCigarrillos);
-  
-    if (cigarrilloSeleccionado !== null) {
-      let cantidad = Number(prompt("Seleccione la cantidad que desee"));
-      let monto = calculoMonto(cigarrilloSeleccionado + 8, cantidad);
-      alert("El monto a pagar es de: $" + monto);
-    }
-  
-  } else if (opcionSeleccionada === 4) {
-    let montoCargaSUBE = Number(prompt("Ingrese el monto que desea cargar a la SUBE:"));
-    alert("El monto a pagar es de: $" + montoCargaSUBE);
+    mensajeActual = mensajeContainer;
   }
-  
   
   function mostrarMetodosPago() {
     const metodosPago = ["Efectivo", "Mercado Pago", "Crédito/Débito"];
-  
     const container = document.getElementById("metodo-pago-container");
   
     metodosPago.forEach((metodo, index) => {
       const button = document.createElement("button");
       button.textContent = metodo;
+      button.id = `metodo-pago-${index + 1}`;
       button.addEventListener("click", () => {
         if (index === 0) {
-          alert("Págale al vendedor. ¡Muchas gracias por su compra!");
+          mostrarMensajeEnContenedor("Paguele al vendedor. ¡Muchas gracias por su compra!");
         } else if (index === 1) {
-          alert("Pídale al vendedor el QR. ¡Muchas gracias por su compra!");
+          mostrarMensajeEnContenedor("Pídale al vendedor el QR. ¡Muchas gracias por su compra!");
         } else if (index === 2) {
-          alert("Pásele la tarjeta al vendedor. ¡Muchas gracias por su compra!");
+          mostrarMensajeEnContenedor("Pásele la tarjeta al vendedor. ¡Muchas gracias por su compra!");
         } else {
-          alert("Opción no válida");
+          mostrarMensajeEnContenedor("Opción no válida");
         }
       });
   
@@ -113,5 +89,90 @@ class Producto {
     });
   }
   
+  function crearTablaProductos() {
+    const tablaContainer = document.getElementById("tabla-container");
+    const tabla = document.createElement("table");
+  
+   
+    const thead = document.createElement("thead");
+    const encabezadoFila = document.createElement("tr");
+    const encabezadoProducto = document.createElement("th");
+    encabezadoProducto.textContent = "Producto";
+    const encabezadoCantidad = document.createElement("th");
+    encabezadoCantidad.textContent = "Cantidad";
+    encabezadoFila.appendChild(encabezadoProducto);
+    encabezadoFila.appendChild(encabezadoCantidad);
+    thead.appendChild(encabezadoFila);
+    tabla.appendChild(thead);
+  
+   
+    const tbody = document.createElement("tbody");
+    productos.forEach((producto, index) => {
+      const fila = document.createElement("tr");
+  
+      const celdaProducto = document.createElement("td");
+      celdaProducto.textContent = producto.nombre;
+  
+      const celdaCantidad = document.createElement("td");
+      const inputCantidad = document.createElement("input");
+      inputCantidad.type = "number";
+      inputCantidad.min = "0";
+      inputCantidad.id = `cantidad-${index}`;
+      celdaCantidad.appendChild(inputCantidad);
+  
+      fila.appendChild(celdaProducto);
+      fila.appendChild(celdaCantidad);
+      tbody.appendChild(fila);
+    });
+  
+    tabla.appendChild(tbody);
+    tablaContainer.appendChild(tabla);
+  }
+  
+  function obtenerCantidadesSeleccionadas() {
+    const cantidades = [];
+  
+    productos.forEach((_, index) => {
+      const inputCantidad = document.getElementById(`cantidad-${index}`);
+      const cantidad = Number(inputCantidad.value);
+      cantidades.push(cantidad);
+    });
+  
+    return cantidades;
+  }
+  
+  function procesarCompra() {
+    const cantidades = obtenerCantidadesSeleccionadas();
+  
+    let montoTotal = 0;
+  
+    cantidades.forEach((cantidad, index) => {
+      const montoProducto = calculoMonto(index, cantidad);
+      montoTotal += montoProducto;
+    });
+  
+    mostrarMensajeEnContenedor("El monto a pagar es de: $" + montoTotal);
+  
+    setTimeout(() => {
+      mostrarMensajeEnContenedor("Seleccioná tu método de pago");
+    }, 2000); 
+  }
+  
+  
+  localStorage.setItem("productos", JSON.stringify(productos));
+  
+  const storedProductos = JSON.parse(localStorage.getItem("productos"));
+  if (storedProductos) {
+    productos.length = 0;
+    storedProductos.forEach((producto) => {
+      productos.push(new Producto(producto.nombre, producto.precio));
+    });
+  }
+  
+  const procesarCompraButton = document.getElementById("procesar-compra-button");
+  procesarCompraButton.addEventListener("click", procesarCompra);
+  
   mostrarMetodosPago();
+  crearTablaProductos();
+  
   
