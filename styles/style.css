@@ -46,6 +46,9 @@ body {
     border-radius: 50%;
     background-color: #9a7517;
   }
+  .img-kiosko{
+    margin-top: 30px;
+  }
   
   .stilo-boton {
     display: flex;
